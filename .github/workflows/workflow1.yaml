@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '*/30 * * * *'
 
 jobs:
-  build:
+  say_hello:
     runs-on: ubuntu-latest
 
     steps:

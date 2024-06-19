@@ -5,18 +5,24 @@ on:
     branches:
       - main
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '* */12 * * *'
 
 jobs:
   say_hello:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
       - name: Fetch data from sunsetbot
         run: curl -s 'https://sunsetbot.top/?query_id=1212123&intend=select_city&query_city=%E5%8C%97%E4%BA%AC&event_date=None&event=rise_1&times=None' -o result.json
 
+      - name: Parse json
+        run: python3 -c "import json; print(json.load(open('result.json'))['local_quality'])"
+
       - name: Upload result
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: result-json
           path: result.json

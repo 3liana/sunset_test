@@ -12,5 +12,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Say hello to the world
-        run: echo "Hello, world!"
+      - name: Fetch data from sunsetbot
+        run: curl -s 'https://sunsetbot.top/?query_id=1212123&intend=select_city&query_city=%E5%8C%97%E4%BA%AC&event_date=None&event=rise_1&times=None' -o result.json
+
+      - name: Upload result
+        uses: actions/upload-artifact@v3
+        with:
+          name: result-json
+          path: result.json

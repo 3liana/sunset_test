@@ -19,10 +19,24 @@ jobs:
         run: curl -s 'https://sunsetbot.top/?query_id=1212123&intend=select_city&query_city=%E5%8C%97%E4%BA%AC&event_date=None&event=rise_1&times=None' -o result.json
 
       - name: Parse json
-        run: python3 -c "import json; print(json.load(open('result.json'))['local_quality'])"
+        id: parse
+        run: | 
+          python3 -c "import json; print(json.load(open('result.json'))['local_quality'])" | tee quality.txt
+          echo "::set-output name=quality::$(cat quality.txt)"
 
       - name: Upload result
         uses: actions/upload-artifact@v4
         with:
           name: result-json
           path: result.json
+
+      - name: Send email
+        uses: dawidd6/action-send-mail@v2
+        with:
+          server_address: ${{ secrets.EMAIL_SERVER }}
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          subject: 'Sunsetbot'
+          body: 'The quality of sunset in Beijing is ${{ steps.parse.outputs.stdout }}'
+          to: ${{ secrets.EMAIL_USERNAME }}

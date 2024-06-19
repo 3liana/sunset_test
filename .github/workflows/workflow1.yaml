@@ -22,7 +22,7 @@ jobs:
         id: parse
         run: | 
           python3 -c "import json; print(json.load(open('result.json'))['local_quality'])" | tee quality.txt
-          echo "::set-output name=quality::$(cat quality.txt)"
+          echo "QUALITY=$(cat quality.txt)" >> $GITHUB_ENV
 
       - name: Upload result
         uses: actions/upload-artifact@v4
@@ -38,5 +38,6 @@ jobs:
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: 'Sunsetbot'
-          body: 'The quality of sunset in Beijing is ${{ steps.parse.outputs.stdout }}'
+          body: 'The quality of sunset in Beijing is ${{ steps.parse.outputs.QUALITY }}'
+          from: ${{ secrets.EMAIL_USERNAME }}
           to: ${{ secrets.EMAIL_USERNAME }}

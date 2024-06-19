@@ -38,6 +38,6 @@ jobs:
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: 'Sunsetbot'
-          body: 'The quality of sunset in Beijing is ${{ steps.parse.outputs.QUALITY }}'
+          body: 'The quality of sunset in Beijing is ${{ env.QUALITY }}'
           from: ${{ secrets.EMAIL_USERNAME }}
           to: ${{ secrets.EMAIL_USERNAME }}

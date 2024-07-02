@@ -32,12 +32,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: result-json
-          path: |
-            result.json
-            result2.json
+          path: result.json
 
       - name: Send email
-        uses: dawidd6/action-send-mail@v2
+        uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.EMAIL_SERVER }}
           server_port: 465

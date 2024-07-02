@@ -44,9 +44,10 @@ jobs:
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: 'Sunsetbot 日落预报 - ${{ env.QUALITY }}'
-          body: 'The quality of sunset today in Beijing is ${{ env.QUALITY }}.
-          Quality tomorrow is ${{ env.QUALITY2 }}. 
-          Check https://sunsetbot.top for more information.'
+          body: |
+            The quality of sunset today in Beijing is ${{ env.QUALITY }}.
+            Quality tomorrow is ${{ env.QUALITY2 }}. 
+            Check https://sunsetbot.top for more information.
           attachments: result.json,result2.json
           from: ${{ secrets.EMAIL_USERNAME }}
           to: ${{ secrets.EMAIL_USERNAME }}

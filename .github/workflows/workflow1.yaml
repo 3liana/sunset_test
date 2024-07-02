@@ -45,8 +45,18 @@ jobs:
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: 'Sunsetbot 日落预报 - ${{ env.QUALITY }}'
           body: |
+            根据 https://sunsetbot.top 的预测，北京今日的日落质量为 ${{ env.QUALITY }}。
+
+            明日质量为 ${{ env.QUALITY2 }}。
+
+            请查看 https://sunsetbot.top 获取更多信息。
+
+            —————————————————
+
             The quality of sunset today in Beijing is ${{ env.QUALITY }}.
+
             Quality tomorrow is ${{ env.QUALITY2 }}. 
+
             Check https://sunsetbot.top for more information.
           attachments: result.json,result2.json
           from: ${{ secrets.EMAIL_USERNAME }}

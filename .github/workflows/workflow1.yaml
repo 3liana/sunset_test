@@ -16,20 +16,25 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Fetch data from sunsetbot
-        run: curl -s 'https://sunsetbot.top/?query_id=1212123&intend=select_city&query_city=%E5%8C%97%E4%BA%AC&event_date=None&event=set_1&times=None' -o result.json
+        run: |
+          curl -s 'https://sunsetbot.top/?query_id=1212123&intend=select_city&query_city=%E5%8C%97%E4%BA%AC&event_date=None&event=set_1&times=None' -o result.json
+          curl -s 'https://sunsetbot.top/?query_id=1212123&intend=select_city&query_city=%E5%8C%97%E4%BA%AC&event_date=None&event=set_2&times=None' -o result2.json
 
       - name: Parse json
         id: parse
         run: | 
           python3 -c "import json; print(json.load(open('result.json'))['local_quality'])" | tee quality.txt
           echo "QUALITY=$(cat quality.txt)" >> $GITHUB_ENV
-          python3 -c "import json; print(json.load(open('result.json'))['table_content'])" | tee table_content.html
+          python3 -c "import json; print(json.load(open('result2.json'))['local_quality'])" | tee quality2.txt
+          echo "QUALITY2=$(cat quality2.txt)" >> $GITHUB_ENV
 
       - name: Upload result
         uses: actions/upload-artifact@v4
         with:
           name: result-json
-          path: result.json
+          path: |
+            result.json
+            result2.json
 
       - name: Send email
         uses: dawidd6/action-send-mail@v2
@@ -39,7 +44,7 @@ jobs:
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: 'Sunsetbot 日落预报 - ${{ env.QUALITY }}'
-          body: 'The quality of sunset today in Beijing is ${{ env.QUALITY }}.'
-          attachments: 'table_content.html'
+          body: 'The quality of sunset today in Beijing is ${{ env.QUALITY }}.\nQuality tomorrow is ${{ env.QUALITY2 }}. \nCheck https://sunsetbot.top for more information.'
+          attachments: result.json,result2.json
           from: ${{ secrets.EMAIL_USERNAME }}
           to: ${{ secrets.EMAIL_USERNAME }}

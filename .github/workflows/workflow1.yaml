@@ -23,9 +23,11 @@ jobs:
       - name: Parse json
         id: parse
         run: | 
-          python3 -c "import json; print(json.load(open('result.json'))['local_quality'])" | tee quality.txt
-          echo "QUALITY=$(cat quality.txt)" >> $GITHUB_ENV
-          python3 -c "import json; print(json.load(open('result2.json'))['local_quality'])" | tee quality2.txt
+          python3 -c "import json; print(json.load(open('result.json'))['tb_quality'].replace('<br>', ' '))" | tee quality1.txt
+          echo "QUALITY1=$(cat quality1.txt)" >> $GITHUB_ENV
+          python3 -c "import json; print(json.load(open('result.json'))['tb_event_time'].replace('<br>', ' '))" | tee time1.txt
+          echo "TIME1=$(cat time1.txt)" >> $GITHUB_ENV
+          python3 -c "import json; print(json.load(open('result2.json'))['tb_quality'])" | tee quality2.txt
           echo "QUALITY2=$(cat quality2.txt)" >> $GITHUB_ENV
 
       - name: Upload result
@@ -41,9 +43,9 @@ jobs:
           server_port: 465
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: 'Sunsetbot 日落预报 - ${{ env.QUALITY }}'
+          subject: 'Sunsetbot 日落预报 - ${{ env.QUALITY1 }}'
           body: |
-            根据 https://sunsetbot.top 的预测，北京今日的日落质量为 ${{ env.QUALITY }}。
+            北京今日的日落质量为 ${{ env.QUALITY1 }}，日落将于 ${{ env.TIME1 }}发生。
 
             明日质量为 ${{ env.QUALITY2 }}。
 
@@ -51,9 +53,9 @@ jobs:
 
             —————————————————
 
-            The quality of sunset today in Beijing is ${{ env.QUALITY }}.
+            The quality of sunset today in Beijing is ${{ env.QUALITY1 }}. This will happen in ${{ env.TIME1 }}.
 
-            Quality tomorrow is ${{ env.QUALITY2 }}. 
+            The quality tomorrow is ${{ env.QUALITY2 }}. 
 
             Check https://sunsetbot.top for more information.
           attachments: result.json,result2.json

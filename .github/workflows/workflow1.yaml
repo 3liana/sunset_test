@@ -17,24 +17,24 @@ jobs:
 
       - name: Fetch data from sunsetbot
         run: |
-          curl -s 'https://sunsetbot.top/?query_id=1212123&intend=select_city&query_city=%E5%8C%97%E4%BA%AC&event_date=None&event=set_1&times=None' -o result.json
+          curl -s 'https://sunsetbot.top/?query_id=1212123&intend=select_city&query_city=%E5%8C%97%E4%BA%AC&event_date=None&event=set_1&times=None' -o result1.json
           curl -s 'https://sunsetbot.top/?query_id=1212123&intend=select_city&query_city=%E5%8C%97%E4%BA%AC&event_date=None&event=set_2&times=None' -o result2.json
 
       - name: Parse json
         id: parse
         run: | 
-          python3 -c "import json; print(json.load(open('result.json'))['tb_quality'].replace('<br>', ' '))" | tee quality1.txt
+          python3 -c "import json; print(json.load(open('result1.json'))['tb_quality'].replace('<br>', ' '))" | tee quality1.txt
           echo "QUALITY1=$(cat quality1.txt)" >> $GITHUB_ENV
-          python3 -c "import json; print(json.load(open('result.json'))['tb_event_time'].replace('<br>', ' '))" | tee time1.txt
+          python3 -c "import json; print(json.load(open('result1.json'))['tb_event_time'].replace('<br>', ' '))" | tee time1.txt
           echo "TIME1=$(cat time1.txt)" >> $GITHUB_ENV
-          python3 -c "import json; print(json.load(open('result2.json'))['tb_quality'])" | tee quality2.txt
+          python3 -c "import json; print(json.load(open('result2.json'))['tb_quality'].replace('<br>', ' '))" | tee quality2.txt
           echo "QUALITY2=$(cat quality2.txt)" >> $GITHUB_ENV
 
       - name: Upload result
         uses: actions/upload-artifact@v4
         with:
           name: result-json
-          path: result.json
+          path: result1.json
 
       - name: Send email
         uses: dawidd6/action-send-mail@v3
@@ -58,6 +58,6 @@ jobs:
             The quality tomorrow is ${{ env.QUALITY2 }}. 
 
             Check https://sunsetbot.top for more information.
-          attachments: result.json,result2.json
+          attachments: result1.json,result2.json
           from: ${{ secrets.EMAIL_USERNAME }}
           to: ${{ secrets.EMAIL_USERNAME }}

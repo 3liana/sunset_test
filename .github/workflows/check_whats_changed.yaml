@@ -1,0 +1,26 @@
+name: Check what's changed
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  runs-on: ubuntu-latest
+
+  steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Get changed files
+      id: changed-files
+      uses: tj-actions/changed-files@v42
+
+    - name: Dump file change
+      run: echo "${{ steps.changed-files.outputs.all_changed_files }}" > res.txt
+
+    - name: Upload result
+      uses: actions/upload-artifact@v4
+      with:
+        name: result-txt
+        path: res.txt
